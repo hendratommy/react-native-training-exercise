@@ -5,16 +5,17 @@ import {
 } from "react-navigation";
 
 import MainTabNavigator from "./MainTabNavigator";
-import WelcomeScreen from "../screens/WelcomeScreen";
+import LoginScreen from "../screens/LoginScreen";
+import RegisterScreen from "../screens/RegisterScreen";
 
 export default createAppContainer(
     createSwitchNavigator(
         {
-            Welcome: createStackNavigator({ Welcome: WelcomeScreen }),
-            Main: MainTabNavigator
+            LoginScreen: createStackNavigator({ LoginScreen, RegisterScreen }),
+            MainScreen: MainTabNavigator
         },
         {
-            initialRouteName: "Welcome"
+            initialRouteName: "LoginScreen"
         }
     )
 );

@@ -9,7 +9,7 @@ import TabBarIcon from "../components/VectorIcon";
 import HomeScreen from "../screens/HomeScreen";
 
 const HomeStack = createStackNavigator({
-    Home: HomeScreen
+    HomeScreen
 });
 
 HomeStack.navigationOptions = {
