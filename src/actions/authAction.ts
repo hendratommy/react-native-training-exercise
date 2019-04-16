@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from "axios";
-import { IResponse, ILoginResponse } from "../types";
+import { IResponse, ITypedResponseData, ILoginData } from "../types";
 import createAgent from "./createAgent";
 
 const baseUrl = "https://sajudin.000webhostapp.com/v1";
@@ -26,6 +26,6 @@ export default {
             method: "POST",
             data: { username, password }
         };
-        return agent.request<ILoginResponse>(config);
+        return agent.request<ITypedResponseData<ILoginData>>(config);
     }
 };

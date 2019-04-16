@@ -10,10 +10,19 @@ export default {
         alignItems: "center",
         backgroundColor: "red"
     },
-    users: {
+    flatListItem: {
         padding: 10
     },
     contentBody: {
-        margin: 10
+        margin: 10,
+        height: "100%",
+        width: "100%"
+    },
+    loadingIndicatorContainer: {
+        position: "absolute",
+        zIndex: 1,
+        justifyContent: "center",
+        width: "100%",
+        height: "100%"
     }
 };

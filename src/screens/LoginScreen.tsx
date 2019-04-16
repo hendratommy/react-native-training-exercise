@@ -7,13 +7,16 @@ import {
     View,
     Alert,
     TextInput,
-    Button
+    Button,
+    ActivityIndicator
 } from "react-native";
 import { NavigationScreenProps } from "react-navigation";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { TouchableOpacity } from "react-native";
 import authAction from "../actions/authAction";
+import { observer, inject } from "mobx-react";
+import { IAppStore } from "../stores/AppStore";
 
 const styles = StyleSheet.create({
     container: {
@@ -59,9 +62,7 @@ const styles = StyleSheet.create({
         borderWidth: 1
     },
     submitButtonContainer: {
-        width: "100%",
-        marginTop: 8,
-        alignItems: "flex-end"
+        marginTop: 30
     },
     registerContainer: {
         marginTop: 30,
@@ -78,6 +79,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "#2e78b7"
     },
+    centeredContainer: {
+        alignItems: "center",
+        width: "100%"
+    },
     messageContainer: {
         borderWidth: 1,
         borderColor: "#2e78b7",
@@ -88,6 +93,13 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "#2e78b7",
         textAlign: "center"
+    },
+    loadingIndicatorContainer: {
+        position: "absolute",
+        zIndex: 1,
+        justifyContent: "center",
+        width: "100%",
+        height: "100%"
     }
 });
 
@@ -99,18 +111,29 @@ const schema = yup.object().shape({
     password: yup.string().required("Password required")
 });
 
-interface IProps extends NavigationScreenProps {}
+interface IProps extends NavigationScreenProps {
+    appStore?: IAppStore;
+}
 
+@inject("appStore")
+@observer
 export default class WelcomeScreen extends React.Component<IProps> {
     static navigationOptions = {
         header: null
     };
 
+    componentDidMount() {
+        if (this.props.appStore!.isLoggedIn) {
+            this.props.navigation.navigate("MainScreen");
+        }
+    }
+
     navigateToRegister = async () => {
         this.props.navigation.navigate("RegisterScreen");
     };
 
-    onLoginSuccess = () => {
+    onLoginSuccess = (id: number, username: string) => {
+        this.props.appStore!.setSession(id, username);
         this.props.navigation.navigate("MainScreen");
     };
 
@@ -145,10 +168,10 @@ export default class WelcomeScreen extends React.Component<IProps> {
                                 values.username,
                                 values.password
                             );
-                            const { status, message } = response.data;
+                            const { status, message, data } = response.data;
                             action.setStatus({ message });
                             if (status === 200) {
-                                self.onLoginSuccess();
+                                self.onLoginSuccess(data.id, data.username);
                             }
                         } catch (error) {
                             Alert.alert("Error", error.message);
@@ -162,13 +185,25 @@ export default class WelcomeScreen extends React.Component<IProps> {
                         values,
                         status,
                         errors,
-                        isSubmitting
+                        isSubmitting,
+                        touched
                     }) => (
                         <View style={styles.loginFormBody}>
+                            {isSubmitting && (
+                                <View style={styles.loadingIndicatorContainer}>
+                                    <ActivityIndicator size="large" />
+                                </View>
+                            )}
                             {status && status.message && (
-                                <Text style={styles.errorText}>
-                                    {status.message.toUpperCase()}
-                                </Text>
+                                <View style={[styles.centeredContainer]}>
+                                    <Text style={styles.errorText}>
+                                        {`${(status.message as string)
+                                            .charAt(0)
+                                            .toUpperCase()}${(status.message as string).slice(
+                                            1
+                                        )}`}
+                                    </Text>
+                                </View>
                             )}
                             <View style={styles.formField}>
                                 <Text>Email: </Text>
@@ -177,15 +212,17 @@ export default class WelcomeScreen extends React.Component<IProps> {
                                     onChangeText={handleChange("username")}
                                     value={values.username}
                                 />
-                                {status && status.username ? (
-                                    <Text style={styles.errorText}>
-                                        {status.username}
-                                    </Text>
-                                ) : (
-                                    <Text style={styles.errorText}>
-                                        {errors.username}
-                                    </Text>
-                                )}
+                                {touched.username &&
+                                    ((status && status.username && (
+                                        <Text style={styles.errorText}>
+                                            {status.username}
+                                        </Text>
+                                    )) ||
+                                        (errors && errors.username && (
+                                            <Text style={styles.errorText}>
+                                                {errors.username}
+                                            </Text>
+                                        )))}
                             </View>
 
                             <View style={styles.formField}>
@@ -194,21 +231,29 @@ export default class WelcomeScreen extends React.Component<IProps> {
                                     style={styles.textInput}
                                     onChangeText={handleChange("password")}
                                     value={values.password}
+                                    secureTextEntry
                                 />
-                                {status && status.password ? (
-                                    <Text style={styles.errorText}>
-                                        {status.password}
-                                    </Text>
-                                ) : (
-                                    <Text style={styles.errorText}>
-                                        {errors.password}
-                                    </Text>
-                                )}
+                                {touched.password &&
+                                    ((status && status.password && (
+                                        <Text style={styles.errorText}>
+                                            {status.password}
+                                        </Text>
+                                    )) ||
+                                        (errors && errors.password && (
+                                            <Text style={styles.errorText}>
+                                                {errors.password}
+                                            </Text>
+                                        )))}
                             </View>
-                            <View style={styles.submitButtonContainer}>
+                            <View
+                                style={[
+                                    styles.centeredContainer,
+                                    styles.submitButtonContainer
+                                ]}
+                            >
                                 <Button
                                     onPress={handleSubmit}
-                                    title="Submit"
+                                    title="Login"
                                     disabled={isSubmitting}
                                 />
                             </View>

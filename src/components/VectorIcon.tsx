@@ -6,6 +6,7 @@ interface IProps {
     name: string;
     focused?: boolean;
     size: number;
+    color?: string;
 }
 
 export default class VectorIcon extends React.Component<IProps> {
@@ -14,16 +15,14 @@ export default class VectorIcon extends React.Component<IProps> {
     };
 
     render() {
+        const { name, size, focused, ...rest } = this.props;
         return (
             <Ionicons
-                name={this.props.name}
-                size={this.props.size}
+                name={name}
+                size={size}
                 style={{ marginBottom: -3 }}
-                color={
-                    this.props.focused
-                        ? Colors.tabIconSelected
-                        : Colors.tabIconDefault
-                }
+                color={focused ? Colors.tabIconSelected : Colors.tabIconDefault}
+                {...rest}
             />
         );
     }

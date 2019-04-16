@@ -32,6 +32,7 @@
         "@typescript-eslint/interface-name-prefix": ["error", "always"],
         "@typescript-eslint/no-empty-interface": "off",
         "@typescript-eslint/no-use-before-define": "off",
+        "@typescript-eslint/indent": "off",
         "no-undef": "off"
     }
 }

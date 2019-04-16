@@ -12,6 +12,8 @@ import {
 } from "react-native";
 import WebBrowser from "react-native-inappbrowser-reborn";
 import { NavigationScreenProps } from "react-navigation";
+import { observer, inject } from "mobx-react";
+import { IAppStore } from "../stores/AppStore";
 
 const styles = StyleSheet.create({
     container: {
@@ -102,14 +104,24 @@ const styles = StyleSheet.create({
     }
 });
 
-interface IProps extends NavigationScreenProps {}
+interface IProps extends NavigationScreenProps {
+    appStore?: IAppStore;
+}
 
+@inject("appStore")
+@observer
 export default class HomeScreen extends React.Component<IProps> {
     static navigationOptions = {
         header: null
     };
 
+    logout = () => {
+        this.props.appStore!.invalidateSession();
+        this.props.navigation.navigate("LoginScreen");
+    };
+
     render() {
+        const { sessionExpiredIn } = this.props.appStore!;
         return (
             <View style={styles.container}>
                 <ScrollView
@@ -166,7 +178,7 @@ export default class HomeScreen extends React.Component<IProps> {
 
                 <View style={styles.tabBarInfoContainer}>
                     <Text style={styles.tabBarInfoText}>
-                        This is a tab bar. You can edit it in:
+                        Your session will be expired in:
                     </Text>
 
                     <View
@@ -181,9 +193,16 @@ export default class HomeScreen extends React.Component<IProps> {
                                 { fontFamily: "space-mono" }
                             ]}
                         >
-                            src/navigation/MainTabNavigator.tsx
+                            {`${Math.ceil(sessionExpiredIn / 1000)}s`}
                         </Text>
                     </View>
+
+                    <TouchableOpacity
+                        onPress={this.logout}
+                        style={styles.helpLink}
+                    >
+                        <Text style={styles.helpLinkText}>Logout</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         );

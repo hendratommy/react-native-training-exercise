@@ -5,8 +5,10 @@ import {
     createStackNavigator,
     TabBarIconProps
 } from "react-navigation";
-import TabBarIcon from "../components/VectorIcon";
+import VectorIcon from "../components/VectorIcon";
+import CategoriesScreen from "../screens/CategoriesScreen";
 import HomeScreen from "../screens/HomeScreen";
+import CreateCategoryScreen from "../screens/CreateCategoryScreen";
 
 const HomeStack = createStackNavigator({
     HomeScreen
@@ -15,7 +17,7 @@ const HomeStack = createStackNavigator({
 HomeStack.navigationOptions = {
     tabBarLabel: "Home",
     tabBarIcon: ({ focused }: TabBarIconProps) => (
-        <TabBarIcon
+        <VectorIcon
             focused={focused}
             name={
                 Platform.OS === "ios"
@@ -26,6 +28,26 @@ HomeStack.navigationOptions = {
     )
 };
 
+const CategoriesStack = createStackNavigator({
+    CategoriesScreen: CategoriesScreen,
+    CreateCategoryScreen: CreateCategoryScreen
+});
+
+CategoriesStack.navigationOptions = {
+    tabBarLabel: "Categories",
+    tabBarIcon: ({ focused }: TabBarIconProps) => (
+        <VectorIcon
+            focused={focused}
+            name={
+                Platform.OS === "ios"
+                    ? `ios-pricetags${focused ? "" : "-outline"}`
+                    : "md-pricetags"
+            }
+        />
+    )
+};
+
 export default createBottomTabNavigator({
-    HomeStack
+    HomeStack,
+    CategoriesStack
 });

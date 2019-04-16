@@ -18,7 +18,16 @@ interface IProps {
 const styles = StyleSheet.create({
     root: {
         flex: 1,
-        backgroundColor: "#fff"
+        backgroundColor: "#fff",
+        height: "100%",
+        width: "100%"
+    },
+    loadingIndicatorContainer: {
+        position: "absolute",
+        zIndex: 1,
+        justifyContent: "center",
+        width: "100%",
+        height: "100%"
     }
 });
 
@@ -32,21 +41,28 @@ export default class Main extends React.Component<IProps> {
     }
 
     onLoadingFinished = () => {
-        this.props.appStore!.setLoading(false);
+        // this.props.appStore!.setLoading(false);
     };
 
     render() {
         const { skipLoadingScreen } = this.props;
         const { loading } = this.props.appStore!;
-        if (loading && !skipLoadingScreen) {
-            return <ActivityIndicator size="large" />;
-        } else {
-            return (
-                <View style={styles.root}>
-                    {Platform.OS === "ios" && <StatusBar barStyle="default" />}
-                    <AppNavigator />
-                </View>
-            );
-        }
+
+        return (
+            <View style={styles.root}>
+                {loading && !skipLoadingScreen ? (
+                    <View style={styles.loadingIndicatorContainer}>
+                        <ActivityIndicator size="large" />
+                    </View>
+                ) : (
+                    <React.Fragment>
+                        {Platform.OS === "ios" && (
+                            <StatusBar barStyle="default" />
+                        )}
+                        <AppNavigator />
+                    </React.Fragment>
+                )}
+            </View>
+        );
     }
 }

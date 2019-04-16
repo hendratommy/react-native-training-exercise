@@ -1,3 +1,11 @@
+export interface IError {
+    code?: string;
+    message?: string;
+    errors?: {
+        [name: string]: string;
+    };
+}
+
 export interface IUser {
     username: string;
     password: string;
@@ -10,12 +18,23 @@ export interface IResponse {
     message: string;
 }
 
-interface ILoginData extends IUser {
+export interface ILoginData extends IUser {
     id: number;
     created_at: Date;
     updated_at: Date;
 }
 
-export interface ILoginResponse extends IResponse {
-    data: ILoginData;
+export interface ITypedResponseData<T> extends IResponse {
+    data: T;
+}
+
+export interface IUserSession {
+    id: number;
+    username: string;
+    expiredAt: number;
+}
+
+export interface ICategory {
+    id: number;
+    name: string;
 }

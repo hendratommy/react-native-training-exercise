@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
         paddingTop: 30
     },
     form: {
+        marginTop: 30,
         marginHorizontal: 50
     },
     formField: {
@@ -38,10 +39,12 @@ const styles = StyleSheet.create({
         borderColor: "gray",
         borderWidth: 1
     },
+    centeredContainer: {
+        alignItems: "center",
+        width: "100%"
+    },
     submitButtonContainer: {
-        width: "100%",
-        marginTop: 30,
-        alignItems: "center"
+        marginTop: 30
     },
     loadingIndicatorContainer: {
         position: "absolute",
@@ -49,8 +52,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         width: "100%",
         height: "100%"
-    },
-    loadingIndicator: {}
+    }
 });
 
 const schema = yup.object().shape({
@@ -65,7 +67,7 @@ const schema = yup.object().shape({
 
 interface IProps extends NavigationScreenProps {}
 
-export default class WelcomeScreen extends React.Component<IProps> {
+export default class RegisterScreen extends React.Component<IProps> {
     static navigationOptions = {
         title: "Register"
     };
@@ -114,7 +116,8 @@ export default class WelcomeScreen extends React.Component<IProps> {
                         values,
                         status,
                         errors,
-                        isSubmitting
+                        isSubmitting,
+                        touched
                     }) => (
                         <View style={styles.form}>
                             {isSubmitting && (
@@ -122,6 +125,18 @@ export default class WelcomeScreen extends React.Component<IProps> {
                                     <ActivityIndicator size="large" />
                                 </View>
                             )}
+                            {status && status.message && (
+                                <View style={[styles.centeredContainer]}>
+                                    <Text style={styles.errorText}>
+                                        {`${(status.message as string)
+                                            .charAt(0)
+                                            .toUpperCase()}${(status.message as string).slice(
+                                            1
+                                        )}`}
+                                    </Text>
+                                </View>
+                            )}
+
                             <View style={styles.formField}>
                                 <Text>Email: </Text>
                                 <TextInput
@@ -129,15 +144,17 @@ export default class WelcomeScreen extends React.Component<IProps> {
                                     onChangeText={handleChange("username")}
                                     value={values.username}
                                 />
-                                {status && status.username ? (
-                                    <Text style={styles.errorText}>
-                                        {status.username}
-                                    </Text>
-                                ) : (
-                                    <Text style={styles.errorText}>
-                                        {errors.username}
-                                    </Text>
-                                )}
+                                {touched.username &&
+                                    ((status && status.username && (
+                                        <Text style={styles.errorText}>
+                                            {status.username}
+                                        </Text>
+                                    )) ||
+                                        (errors && errors.username && (
+                                            <Text style={styles.errorText}>
+                                                {errors.username}
+                                            </Text>
+                                        )))}
                             </View>
 
                             <View style={styles.formField}>
@@ -148,15 +165,17 @@ export default class WelcomeScreen extends React.Component<IProps> {
                                     value={values.password}
                                     secureTextEntry
                                 />
-                                {status && status.password ? (
-                                    <Text style={styles.errorText}>
-                                        {status.password}
-                                    </Text>
-                                ) : (
-                                    <Text style={styles.errorText}>
-                                        {errors.password}
-                                    </Text>
-                                )}
+                                {touched.password &&
+                                    ((status && status.password && (
+                                        <Text style={styles.errorText}>
+                                            {status.password}
+                                        </Text>
+                                    )) ||
+                                        (errors && errors.password && (
+                                            <Text style={styles.errorText}>
+                                                {errors.password}
+                                            </Text>
+                                        )))}
                             </View>
 
                             <View style={styles.formField}>
@@ -166,15 +185,17 @@ export default class WelcomeScreen extends React.Component<IProps> {
                                     onChangeText={handleChange("firstname")}
                                     value={values.firstname}
                                 />
-                                {status && status.firstname ? (
-                                    <Text style={styles.errorText}>
-                                        {status.firstname}
-                                    </Text>
-                                ) : (
-                                    <Text style={styles.errorText}>
-                                        {errors.firstname}
-                                    </Text>
-                                )}
+                                {touched.firstname &&
+                                    ((status && status.firstname && (
+                                        <Text style={styles.errorText}>
+                                            {status.firstname}
+                                        </Text>
+                                    )) ||
+                                        (errors && errors.firstname && (
+                                            <Text style={styles.errorText}>
+                                                {errors.firstname}
+                                            </Text>
+                                        )))}
                             </View>
 
                             <View style={styles.formField}>
@@ -184,17 +205,24 @@ export default class WelcomeScreen extends React.Component<IProps> {
                                     onChangeText={handleChange("lastname")}
                                     value={values.lastname}
                                 />
-                                {status && status.lastname ? (
-                                    <Text style={styles.errorText}>
-                                        {status.lastname}
-                                    </Text>
-                                ) : (
-                                    <Text style={styles.errorText}>
-                                        {errors.lastname}
-                                    </Text>
-                                )}
+                                {touched.lastname &&
+                                    ((status && status.lastname && (
+                                        <Text style={styles.errorText}>
+                                            {status.lastname}
+                                        </Text>
+                                    )) ||
+                                        (errors && errors.lastname && (
+                                            <Text style={styles.errorText}>
+                                                {errors.lastname}
+                                            </Text>
+                                        )))}
                             </View>
-                            <View style={styles.submitButtonContainer}>
+                            <View
+                                style={[
+                                    styles.centeredContainer,
+                                    styles.submitButtonContainer
+                                ]}
+                            >
                                 <Button
                                     onPress={handleSubmit}
                                     title="Register"
