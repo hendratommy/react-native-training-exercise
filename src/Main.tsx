@@ -59,7 +59,13 @@ export default class Main extends React.Component<IProps> {
                         {Platform.OS === "ios" && (
                             <StatusBar barStyle="default" />
                         )}
-                        <AppNavigator />
+                        <AppNavigator
+                            ref={navigationRef =>
+                                this.props.appStore!.setNavigationContainer(
+                                    navigationRef
+                                )
+                            }
+                        />
                     </React.Fragment>
                 )}
             </View>

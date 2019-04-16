@@ -117,7 +117,7 @@ export default class HomeScreen extends React.Component<IProps> {
 
     logout = () => {
         this.props.appStore!.invalidateSession();
-        this.props.navigation.navigate("LoginScreen");
+        // this.props.navigation.navigate("LoginScreen");
     };
 
     render() {

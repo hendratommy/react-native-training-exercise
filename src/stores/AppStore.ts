@@ -8,6 +8,10 @@ import {
 } from "mobx";
 import { IError, IUserSession } from "../types";
 import AsyncStorage from "@react-native-community/async-storage";
+import {
+    NavigationContainerComponent,
+    NavigationActions
+} from "react-navigation";
 
 export interface IAppStore {
     loading: boolean;
@@ -19,6 +23,9 @@ export interface IAppStore {
     // setLoading(loading: boolean): void;
     setError(error: IError): void;
     invalidateSession(): void;
+    setNavigationContainer(
+        navigationContainer?: NavigationContainerComponent | null
+    ): void;
 }
 
 class AppStore implements IAppStore {
@@ -27,6 +34,7 @@ class AppStore implements IAppStore {
     @observable session?: IUserSession = undefined;
     @observable currentTime: number = 0;
 
+    _navigationContainerRef?: NavigationContainerComponent;
     _disposer?: IReactionDisposer;
 
     constructor() {
@@ -55,6 +63,12 @@ class AppStore implements IAppStore {
                     this.error = { message: error.message };
                 });
             });
+    }
+
+    setNavigationContainer(
+        navigationContainerRef: NavigationContainerComponent
+    ) {
+        this._navigationContainerRef = navigationContainerRef;
     }
 
     @action
@@ -102,7 +116,6 @@ class AppStore implements IAppStore {
                     });
                 } else {
                     runInAction(() => {
-                        console.debug(`Auto logout`);
                         this.invalidateSession();
                     });
                 }
@@ -116,6 +129,11 @@ class AppStore implements IAppStore {
         this.session = undefined;
         AsyncStorage.removeItem("session");
         this.disposer();
+        if (this._navigationContainerRef) {
+            this._navigationContainerRef.dispatch(
+                NavigationActions.navigate({ routeName: "LoginScreen" })
+            );
+        }
     }
 
     @computed
