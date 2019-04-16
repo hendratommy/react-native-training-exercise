@@ -143,6 +143,7 @@ export default class RegisterScreen extends React.Component<IProps> {
                                     style={styles.textInput}
                                     onChangeText={handleChange("username")}
                                     value={values.username}
+                                    keyboardType="email-address"
                                 />
                                 {touched.username &&
                                     ((status && status.username && (

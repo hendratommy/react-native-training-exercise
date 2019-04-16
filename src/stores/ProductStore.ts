@@ -1,24 +1,30 @@
-import { IError, ICategory } from "../types";
+import { IError, IProduct } from "../types";
 import { observable, action, runInAction } from "mobx";
 import appStore from "./AppStore";
-import categoryAction from "../actions/categoryAction";
+import productAction from "../actions/productAction";
 
-export interface ICategoryStore {
+export interface IProductStore {
     loading: boolean;
     error?: IError;
     message?: string;
     setError(error?: IError): void;
     setMessage(message?: string): void;
-    categories: ICategory[];
-    getCategories(): Promise<void>;
-    createCategory(name: string): Promise<void>;
+    products: IProduct[];
+    getProducts(): Promise<void>;
+    createProduct(
+        name: string,
+        price: number,
+        idCategory: number,
+        images: string,
+        desc: string
+    ): Promise<void>;
 }
 
-class CategoryStore implements ICategoryStore {
+class ProductStore implements IProductStore {
     @observable loading = false;
     @observable error?: IError = {};
     @observable message?: string = undefined;
-    @observable categories: ICategory[] = [];
+    @observable products: IProduct[] = [];
 
     @action
     setError(error: IError) {
@@ -31,11 +37,11 @@ class CategoryStore implements ICategoryStore {
     }
 
     @action
-    async getCategories() {
+    async getProducts() {
         this.loading = true;
         this.error = {};
         try {
-            const response = await categoryAction.getCategories(
+            const response = await productAction.getProducts(
                 appStore.session!.id
             );
 
@@ -44,7 +50,7 @@ class CategoryStore implements ICategoryStore {
             }
 
             runInAction(() => {
-                this.categories = response.data.data;
+                this.products = response.data.data;
             });
             return Promise.resolve();
         } catch (error) {
@@ -60,11 +66,24 @@ class CategoryStore implements ICategoryStore {
     }
 
     @action
-    async createCategory(name: string) {
+    async createProduct(
+        name: string,
+        price: number,
+        idCategory: number,
+        images: string,
+        desc: string
+    ) {
         this.error = {};
         try {
-            await categoryAction.createCategory(appStore.session!.id, name);
-            await this.getCategories();
+            await productAction.createProduct(
+                appStore.session!.id,
+                name,
+                price,
+                idCategory,
+                images,
+                desc
+            );
+            await this.getProducts();
             return Promise.resolve();
         } catch (error) {
             runInAction(() => {
@@ -75,6 +94,6 @@ class CategoryStore implements ICategoryStore {
     }
 }
 
-const categoryStore = new CategoryStore();
+const productStore = new ProductStore();
 
-export default categoryStore;
+export default productStore;

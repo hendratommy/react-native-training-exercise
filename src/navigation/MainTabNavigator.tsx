@@ -9,6 +9,8 @@ import VectorIcon from "../components/VectorIcon";
 import CategoriesScreen from "../screens/CategoriesScreen";
 import HomeScreen from "../screens/HomeScreen";
 import CreateCategoryScreen from "../screens/CreateCategoryScreen";
+import CreateProductScreen from "../screens/CreateProductScreen";
+import ProductsScreen from "../screens/ProductsScreen";
 
 const HomeStack = createStackNavigator({
     HomeScreen
@@ -47,7 +49,27 @@ CategoriesStack.navigationOptions = {
     )
 };
 
+const ProductStack = createStackNavigator({
+    ProductsScreen: ProductsScreen,
+    CreateProductScreen: CreateProductScreen
+});
+
+ProductStack.navigationOptions = {
+    tabBarLabel: "Products",
+    tabBarIcon: ({ focused }: TabBarIconProps) => (
+        <VectorIcon
+            focused={focused}
+            name={
+                Platform.OS === "ios"
+                    ? `ios-cube${focused ? "" : "-outline"}`
+                    : "md-cube"
+            }
+        />
+    )
+};
+
 export default createBottomTabNavigator({
     HomeStack,
-    CategoriesStack
+    CategoriesStack,
+    ProductStack
 });

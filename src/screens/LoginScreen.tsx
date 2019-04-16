@@ -62,7 +62,8 @@ const styles = StyleSheet.create({
         borderWidth: 1
     },
     submitButtonContainer: {
-        marginTop: 30
+        marginTop: 30,
+        width: 100
     },
     registerContainer: {
         marginTop: 30,
@@ -211,6 +212,7 @@ export default class WelcomeScreen extends React.Component<IProps> {
                                     style={styles.textInput}
                                     onChangeText={handleChange("username")}
                                     value={values.username}
+                                    keyboardType="email-address"
                                 />
                                 {touched.username &&
                                     ((status && status.username && (
@@ -245,17 +247,14 @@ export default class WelcomeScreen extends React.Component<IProps> {
                                             </Text>
                                         )))}
                             </View>
-                            <View
-                                style={[
-                                    styles.centeredContainer,
-                                    styles.submitButtonContainer
-                                ]}
-                            >
-                                <Button
-                                    onPress={handleSubmit}
-                                    title="Login"
-                                    disabled={isSubmitting}
-                                />
+                            <View style={styles.centeredContainer}>
+                                <View style={styles.submitButtonContainer}>
+                                    <Button
+                                        onPress={handleSubmit}
+                                        title="Login"
+                                        disabled={isSubmitting}
+                                    />
+                                </View>
                             </View>
                         </View>
                     )}

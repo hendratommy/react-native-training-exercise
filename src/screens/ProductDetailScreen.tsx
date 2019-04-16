@@ -7,12 +7,12 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
+import { Snackbar } from "react-native-paper";
 import { FlatList, NavigationScreenProps } from "react-navigation";
 import VectorIcon from "../components/VectorIcon";
-import { Snackbar } from "react-native-paper";
-import { ICategoryStore } from "../stores/CategoryStore";
+import { IProductStore } from "../stores/ProductStore";
 import globalStyles from "../styles/globalStyles";
-import { ICategory } from "../types";
+import { IProduct } from "../types";
 
 const styles = StyleSheet.create({
     floatingActionButton: {
@@ -36,43 +36,39 @@ const styles = StyleSheet.create({
 });
 
 interface IProps extends NavigationScreenProps {
-    categoryStore: ICategoryStore;
+    productStore: IProductStore;
 }
 
-@inject("categoryStore")
+@inject("productStore")
 @observer
-export default class CategoriesScreen extends React.Component<IProps> {
+export default class ProductScreen extends React.Component<IProps> {
     static navigationOptions = {
-        title: "Categories"
+        title: "Product Detail"
     };
 
     onSnackbarDismiss = () => {
-        this.props.categoryStore!.setMessage(undefined);
+        this.props.productStore!.setMessage(undefined);
     };
 
     componentDidMount() {
-        this.props.categoryStore!.getCategories();
+        this.props.productStore!.getProducts();
     }
 
-    renderCategoryList = (index: number, category: ICategory) => {
+    renderProductList = (index: number, product: IProduct) => {
         return (
             <TouchableOpacity onPress={() => console.debug(`onPress`)}>
                 <View style={globalStyles.flatListItem}>
-                    <Text>{category.name}</Text>
+                    <Text>{product.name}</Text>
                 </View>
             </TouchableOpacity>
         );
     };
 
     render() {
-        const { categories, loading } = this.props.categoryStore!;
-        // const message = this.props.navigation.getParam("message");
-        // if (message && !this.state.snackbarVisible) {
-        //     this.setState({ snackbarVisible: true });
-        // }
-        const { message } = this.props.categoryStore!;
+        const { products, loading } = this.props.productStore!;
+        const { message } = this.props.productStore!;
         return (
-            <View style={[globalStyles.contentBody]}>
+            <View style={globalStyles.contentBody}>
                 {loading ? (
                     <ActivityIndicator size="large" />
                 ) : (
@@ -83,26 +79,22 @@ export default class CategoriesScreen extends React.Component<IProps> {
                                 onDismiss={this.onSnackbarDismiss}
                                 duration={3000}
                                 style={styles.snackbar}
-                                // action={{
-                                //     label: "Dismiss",
-                                //     onPress: () => this.onSnackbarDismiss
-                                // }}
                             >
                                 {message}
                             </Snackbar>
                         )}
                         <FlatList
-                            data={categories ? categories : []}
-                            keyExtractor={category => `${category.id}`}
+                            data={products ? products : []}
+                            keyExtractor={product => `${product.id}`}
                             renderItem={({ item, index }) =>
-                                this.renderCategoryList(index, item)
+                                this.renderProductList(index, item)
                             }
                         />
                         <TouchableOpacity
                             style={styles.floatingActionButton}
                             onPress={() =>
                                 this.props.navigation.navigate(
-                                    "CreateCategoryScreen"
+                                    "CreateProductScreen"
                                 )
                             }
                         >

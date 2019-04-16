@@ -121,7 +121,7 @@ export default class HomeScreen extends React.Component<IProps> {
     };
 
     render() {
-        const { sessionExpiredIn } = this.props.appStore!;
+        // const { sessionExpiredIn } = this.props.appStore!;
         return (
             <View style={styles.container}>
                 <ScrollView
@@ -181,7 +181,7 @@ export default class HomeScreen extends React.Component<IProps> {
                         Your session will be expired in:
                     </Text>
 
-                    <View
+                    {/* <View
                         style={[
                             styles.codeHighlightContainer,
                             styles.navigationFilename
@@ -195,13 +195,20 @@ export default class HomeScreen extends React.Component<IProps> {
                         >
                             {`${Math.ceil(sessionExpiredIn / 1000)}s`}
                         </Text>
-                    </View>
+                    </View> */}
 
                     <TouchableOpacity
                         onPress={this.logout}
-                        style={styles.helpLink}
+                        style={[styles.helpLink]}
                     >
-                        <Text style={styles.helpLinkText}>Logout</Text>
+                        <Text
+                            style={[
+                                styles.helpLinkText,
+                                { fontFamily: "space-mono" }
+                            ]}
+                        >
+                            Logout
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </View>

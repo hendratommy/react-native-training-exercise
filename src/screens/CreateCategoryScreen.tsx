@@ -18,12 +18,14 @@ import { ICategoryStore } from "../stores/CategoryStore";
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff"
+        backgroundColor: "#fff",
+        height: "100%"
     },
     containerContent: {
         paddingTop: 30
     },
     form: {
+        height: "100%",
         marginTop: 30,
         marginHorizontal: 50
     },
@@ -45,7 +47,8 @@ const styles = StyleSheet.create({
         width: "100%"
     },
     submitButtonContainer: {
-        marginTop: 30
+        marginTop: 30,
+        width: 100
     },
     loadingIndicatorContainer: {
         position: "absolute",
@@ -72,9 +75,8 @@ export default class CreateCategoryScreen extends React.Component<IProps> {
     };
 
     onCreateSuccess = () => {
-        this.props.navigation.navigate("CategoriesScreen", {
-            message: "Category created"
-        });
+        this.props.categoryStore.setMessage("Category created");
+        this.props.navigation.navigate("CategoriesScreen");
     };
 
     render() {
@@ -156,17 +158,14 @@ export default class CreateCategoryScreen extends React.Component<IProps> {
                                             </Text>
                                         )))}
                             </View>
-                            <View
-                                style={[
-                                    styles.centeredContainer,
-                                    styles.submitButtonContainer
-                                ]}
-                            >
-                                <Button
-                                    onPress={handleSubmit}
-                                    title="Create"
-                                    disabled={isSubmitting}
-                                />
+                            <View style={styles.centeredContainer}>
+                                <View style={styles.submitButtonContainer}>
+                                    <Button
+                                        onPress={handleSubmit}
+                                        title="Create"
+                                        disabled={isSubmitting}
+                                    />
+                                </View>
                             </View>
                         </View>
                     )}
